@@ -16,6 +16,7 @@ import Signup from "./components/Signup";
 import ResetPassword from "./components/ResetPassword";
 import ResetLinkSent from "./components/ResetLinkSent";
 import ForgotPassword from "./components/ForgotPassword";
+import VerifyEmail from "./components/VerifyEmail";
 
 function App() {
   const standAloneRoutes = [
@@ -24,6 +25,7 @@ function App() {
     "/reset_password",
     "/reset_link_sent",
     "/forgot_password",
+    "/verify_email",
   ];
 
   const { pathname } = useLocation();
@@ -31,7 +33,10 @@ function App() {
   return (
     <>
       <div className="min-h-screen flex flex-col">
-        {!standAloneRoutes.includes(pathname) && <TopNavigationBar />}
+        {!standAloneRoutes.includes(pathname) &&
+          !Boolean(standAloneRoutes.find((p) => pathname.startsWith(p))) && (
+            <TopNavigationBar />
+          )}
         <div className="grow">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -41,12 +46,19 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Signin />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/reset_password" element={<ResetPassword />} />
+            <Route
+              path="/reset_password/:uidb64/:token"
+              element={<ResetPassword />}
+            />
             <Route path="/reset_link_sent" element={<ResetLinkSent />} />
             <Route path="/forgot_password" element={<ForgotPassword />} />
+            <Route path="/verify_email" element={<VerifyEmail />} />
           </Routes>
         </div>
-        {!standAloneRoutes.includes(pathname) && <Footer />}
+        {!standAloneRoutes.includes(pathname) &&
+          !Boolean(standAloneRoutes.find((p) => pathname.startsWith(p))) && (
+            <Footer />
+          )}
       </div>
     </>
   );

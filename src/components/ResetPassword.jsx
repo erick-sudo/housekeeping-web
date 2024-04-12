@@ -112,7 +112,7 @@ const ResetPassword = () => {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="Create new password"
             type={showPassword ? "text" : "password"}
             id="password"
             autoComplete="password"
@@ -139,7 +139,7 @@ const ResetPassword = () => {
             required
             fullWidth
             name="confirm_new_password"
-            label="confirm_new_password"
+            label="Confirm new password"
             type={showPassword ? "text" : "password"}
             id="confirm_new_password"
             autoComplete="confirm_new_password"

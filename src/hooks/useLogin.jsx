@@ -1,10 +1,10 @@
 import { useContext } from "react";
-import { axiosPost, axiosGet } from "../../lib/axiosLib";
-import { apis } from "../../lib/apis";
-import { AuthContext } from "../context/AuthContext";
+import { axiosPost, axiosGet } from "../lib/axiosLib";
+import { apis } from "../lib/apis";
+import { AppContext } from "../components/context/AppContext";
 
 export function useLogin() {
-  const { setUserInfo, startLoading, stopLoading } = useContext(AuthContext);
+  const { setUserInfo, startLoading, stopLoading } = useContext(AppContext);
 
   function updateUserInformation(userData) {
     setUserInfo(userData);

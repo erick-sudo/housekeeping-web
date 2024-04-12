@@ -23,6 +23,9 @@ import {
   VisibilityOff,
 } from "@mui/icons-material";
 import { ValidationErrors } from "./common/ValidationErrors";
+import { axiosPost } from "../lib/axiosLib";
+import { useLogin } from "../hooks/useLogin";
+import Or from "./common/Or";
 
 const styles = {
   root: {
@@ -35,7 +38,7 @@ const styles = {
     height: "48px",
     backgroundColor: "rgb(71, 3, 131)",
   },
-  
+
   submit: {
     margin: "3px 0px 2px",
     backgroundColor: "rgb(71, 3, 131)",
@@ -68,7 +71,7 @@ const styles = {
 const Signin = () => {
   const [loginErrors, setLoginErrors] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  //const [handleLogin] = useLogin();
+  const [handleLogin] = useLogin();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -82,17 +85,21 @@ const Signin = () => {
     });
   }
 
+  function handleGoogleLogin() {
+    //axiosPost()
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
-    // handleLogin({
-    //   payload: {
-    //     ...formData,
-    //     grant_type: "user",
-    //   },
-    //   errorCallback: (err) => {
-    //     setLoginErrors(err?.errors);
-    //   },
-    // });
+    handleLogin({
+      payload: {
+        ...formData,
+      },
+      errorCallback: (err) => {
+        //setLoginErrors(err?.errors);
+        console.error(err);
+      },
+    });
   }
 
   return (
@@ -130,12 +137,6 @@ const Signin = () => {
           Sign in
         </Typography>
 
-        <div className="my-4">
-          <button className="flex items-center gap-2 rounded-md justify-center w-full py-2 border-1 hover:text-purple-700 hover:border-purple-700 duration-300">
-            <Google />
-            Continue with google
-          </button>
-        </div>
         <form onSubmit={handleSubmit} sx={styles.form}>
           <TextField
             value={formData.email}
@@ -228,6 +229,18 @@ const Signin = () => {
             </NavLink>
           </Grid>
         </form>
+
+        <Or className="mt-4"/>
+
+        <div className="my-4">
+          <button
+            onClick={handleGoogleLogin}
+            className="flex items-center gap-2 rounded-md justify-center w-full py-2 border-1 hover:text-purple-700 hover:border-purple-700 duration-300"
+          >
+            <Google />
+            Continue with google
+          </button>
+        </div>
       </Container>
     </div>
   );

@@ -26,6 +26,7 @@ import {
   VisibilityOff,
 } from "@mui/icons-material";
 import { ValidationErrors } from "./common/ValidationErrors";
+import Or from "./common/Or";
 
 const styles = {
   root: {
@@ -111,22 +112,16 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex fixed inset-0 justify-center items-center">
+    <div className="flex fixed inset-0 justify-center overflow-y-scroll">
       <Container maxWidth="xs" className={`px-4 m-4`}>
         <div className="flex justify-center py-8">
           <AppName />
         </div>
         <Typography className="text-center" component="h1" variant="h5">
-          Sign in
+          Sign up
         </Typography>
 
-        <div className="my-4">
-          <button className="flex items-center gap-2 rounded-md justify-center w-full py-2 border-1 hover:text-purple-700 hover:border-purple-700 duration-300">
-            <Google />
-            Continue with google
-          </button>
-        </div>
-        <form onSubmit={handleAccountCreation} className="grid gap-4">
+        <form onSubmit={handleAccountCreation} className="grid gap-4 mt-4">
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -327,6 +322,15 @@ const Signup = () => {
             </NavLink>
           </Grid>
         </form>
+
+        <Or className="mt-4" />
+
+        <div className="my-4">
+          <button className="flex items-center gap-2 rounded-md justify-center w-full py-2 border-1 hover:text-purple-700 hover:border-purple-700 duration-300">
+            <Google />
+            Continue with google
+          </button>
+        </div>
       </Container>
     </div>
   );
