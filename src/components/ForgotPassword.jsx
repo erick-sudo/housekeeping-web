@@ -1,6 +1,6 @@
 import AppName from "./common/AppName";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Button,
   TextField,
@@ -10,9 +10,12 @@ import {
   Divider,
 } from "@mui/material";
 
-import {
-  MailOutlineOutlined,
-} from "@mui/icons-material";
+import { MailOutlineOutlined } from "@mui/icons-material";
+import { axiosPost } from "../lib/axiosLib";
+import { apis } from "../lib/apis";
+import { AppContext } from "./context/AppContext";
+import { NavLink } from "react-router-dom";
+import { images } from "../assets/images/images";
 
 const styles = {
   submit: {
@@ -38,19 +41,35 @@ const styles = {
 };
 
 const ForgotPassword = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-  });
+  const [email, setEmail] = useState("");
+  const { snackNotifier, startLoading, stopLoading } = useContext(AppContext);
 
   function handleChange(e) {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setEmail(e.target.value);
   }
 
   function handleSubmit(e) {
     e.preventDefault();
+    startLoading();
+    axiosPost(apis.requestPasswordReset, {
+      email,
+    })
+      .then((res) => {
+        stopLoading();
+        snackNotifier(res?.data?.message, "success", "top-center");
+      })
+      .catch((axiosError) => {
+        stopLoading();
+        if (axiosError?.response?.data?.failure_code === "NOT_FOUND") {
+          snackNotifier(
+            axiosError?.response?.data?.detail.message,
+            "error",
+            "top-center"
+          );
+        } else {
+          snackNotifier(axiosError.message, "error", "top-center");
+        }
+      });
   }
 
   return (
@@ -74,7 +93,11 @@ const ForgotPassword = () => {
 
         <Divider />
 
-        <form className="mb-4 grid gap-4" onSubmit={handleSubmit} sx={styles.form}>
+        <form
+          className="mb-4 grid gap-4"
+          onSubmit={handleSubmit}
+          sx={styles.form}
+        >
           <TextField
             sx={styles.textField}
             variant="outlined"
@@ -84,7 +107,7 @@ const ForgotPassword = () => {
             label="Email Address"
             name="email"
             autoComplete="email"
-            value={formData.email || ""}
+            value={email || ""}
             onChange={handleChange}
             InputProps={{
               endAdornment: (
@@ -112,6 +135,7 @@ const ForgotPassword = () => {
             spam folder
           </Typography>
         </div>
+        <div className="flex justify-center"><NavLink className="" title="Open Mail App" to="https://mail.google.com/"><div className="w-max bg-purple-200 rounded-lg p-1 hover:shadow-lg hover:shadow-purple-800"><img className="h-10 w-10 inline-block" src={images.mailIcon} /></div></NavLink></div>
       </div>
     </div>
   );

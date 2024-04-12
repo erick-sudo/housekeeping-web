@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -17,6 +17,9 @@ import ResetPassword from "./components/ResetPassword";
 import ResetLinkSent from "./components/ResetLinkSent";
 import ForgotPassword from "./components/ForgotPassword";
 import VerifyEmail from "./components/VerifyEmail";
+import { AppContext } from "./components/context/AppContext";
+import { Loader } from "./components/common/Loader";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const standAloneRoutes = [
@@ -27,11 +30,13 @@ function App() {
     "/forgot_password",
     "/verify_email",
   ];
+  const { loading } = useContext(AppContext);
 
   const { pathname } = useLocation();
 
   return (
     <>
+      {loading && <Loader className="bg-white/75 z-50 fixed" />}
       <div className="min-h-screen flex flex-col">
         {!standAloneRoutes.includes(pathname) &&
           !Boolean(standAloneRoutes.find((p) => pathname.startsWith(p))) && (
@@ -40,7 +45,7 @@ function App() {
         <div className="grow">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/services" element={<Services />} />
+            <Route path="/dashboard/*" element={<Dashboard />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/about" element={<About />} />

@@ -5,7 +5,7 @@ import {
   PhoneEnabledOutlined,
 } from "@mui/icons-material";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Button,
   TextField,
@@ -19,7 +19,7 @@ import {
   Checkbox,
 } from "@mui/material";
 
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   MailOutlineOutlined,
   Visibility,
@@ -27,6 +27,9 @@ import {
 } from "@mui/icons-material";
 import { ValidationErrors } from "./common/ValidationErrors";
 import Or from "./common/Or";
+import { AppContext } from "./context/AppContext";
+import { axiosPost } from "../lib/axiosLib";
+import { apis } from "../lib/apis";
 
 const styles = {
   root: {
@@ -72,6 +75,9 @@ const styles = {
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [registrationData, setRegistrationData] = useState({});
+  const [agree, setagree] = useState(false);
+  const navigate = useNavigate();
+  const { startLoading, stopLoading, snackNotifier } = useContext(AppContext);
 
   const [validationErrors, setValidationErrors] = useState({});
 
@@ -90,23 +96,23 @@ const Signup = () => {
     })
       .then((res) => {
         stopLoading();
-        // snackNotifier(
-        //   "Registered successfully. We have sent an email with instructions to activate your account.",
-        //   "success",
-        //   "top-center"
-        // );
+        snackNotifier(
+          "Registered successfully. We have sent an email with instructions to activate your account.",
+          "success",
+          "top-center"
+        );
+
         setRegistrationData({});
+        setValidationErrors({});
+        navigate("/verify_email");
       })
       .catch((axiosError) => {
+        console.log(axiosError);
         stopLoading();
-        if (axiosError?.response?.data?.errors) {
-          const errors = axiosError.response.data.errors;
-          setValidationErrors(
-            Object.keys(errors).reduce((acc, curr) => {
-              acc[`phase0#${curr}`] = errors[curr];
-              return acc;
-            }, {})
-          );
+        if (axiosError?.response?.data) {
+          setValidationErrors(axiosError?.response?.data);
+        } else {
+          snackNotifier(axiosError.message, "error", "top-center");
         }
       });
   };
@@ -127,28 +133,58 @@ const Signup = () => {
               <TextField
                 sx={styles.textField}
                 autoComplete="name"
-                name="name"
+                name="first_name"
                 variant="outlined"
                 required
                 fullWidth
-                error={Boolean(validationErrors["phase0#name"])}
-                id="name"
-                label="Full Name"
+                error={Boolean(validationErrors["first_name"])}
+                id="first_name"
+                label="First Name"
                 autoFocus
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton aria-label="phone number" edge="end">
+                      <IconButton aria-label="First Name" edge="end">
                         <Person4Outlined />
                       </IconButton>
                     </InputAdornment>
                   ),
                 }}
-                value={registrationData.name || ""}
+                value={registrationData.first_name || ""}
                 onChange={handleRegistrationDataChange}
               />
               <ValidationErrors
-                errorsKey="phase0#name"
+                errorsKey="first_name"
+                errors={validationErrors}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                sx={styles.textField}
+                autoComplete="name"
+                name="last_name"
+                variant="outlined"
+                required
+                fullWidth
+                error={Boolean(validationErrors["last_name"])}
+                id="last_name"
+                label="Last Name"
+                autoFocus
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton aria-label="Last Name" edge="end">
+                        <Person4Outlined />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                value={registrationData.last_name || ""}
+                onChange={handleRegistrationDataChange}
+              />
+              <ValidationErrors
+                errorsKey="last_name"
                 errors={validationErrors}
               />
             </Grid>
@@ -159,7 +195,7 @@ const Signup = () => {
                 variant="outlined"
                 required
                 fullWidth
-                error={Boolean(validationErrors["phase0#email"])}
+                error={Boolean(validationErrors["email"])}
                 id="email"
                 label="Email Address"
                 name="email"
@@ -176,10 +212,7 @@ const Signup = () => {
                   ),
                 }}
               />
-              <ValidationErrors
-                errorsKey="phase0#email"
-                errors={validationErrors}
-              />
+              <ValidationErrors errorsKey="email" errors={validationErrors} />
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -187,7 +220,7 @@ const Signup = () => {
                 variant="outlined"
                 required
                 fullWidth
-                error={Boolean(validationErrors["phase0#phone_number"])}
+                error={Boolean(validationErrors["phone_number"])}
                 id="phone_number"
                 label="Phone Number e.g. 254XXXXXXXXX"
                 name="phone_number"
@@ -205,7 +238,7 @@ const Signup = () => {
                 }}
               />
               <ValidationErrors
-                errorsKey="phase0#phone_number"
+                errorsKey="phone_number"
                 errors={validationErrors}
               />
             </Grid>
@@ -215,7 +248,7 @@ const Signup = () => {
                 variant="outlined"
                 required
                 fullWidth
-                error={Boolean(validationErrors["phase0#password"])}
+                error={Boolean(validationErrors["password"])}
                 name="password"
                 label="Password"
                 id="password"
@@ -237,6 +270,10 @@ const Signup = () => {
                   ),
                 }}
               />
+              <ValidationErrors
+                errorsKey="password"
+                errors={validationErrors}
+              />
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -244,7 +281,7 @@ const Signup = () => {
                 sx={styles.textField}
                 required
                 fullWidth
-                error={Boolean(validationErrors["phase0#password"])}
+                error={Boolean(validationErrors["password_confirmation"])}
                 name="password_confirmation"
                 label="Confirm Password"
                 type={showPassword ? "text" : "password"}
@@ -267,7 +304,7 @@ const Signup = () => {
                 }}
               />
               <ValidationErrors
-                errorsKey="phase0#password"
+                errorsKey="password_confirmation"
                 errors={validationErrors}
               />
             </Grid>
@@ -278,7 +315,8 @@ const Signup = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    value="allowExtraEmails"
+                    onChange={() => setagree(!agree)}
+                    checked={agree}
                     sx={styles.customCheckbox}
                   />
                 }
@@ -304,6 +342,7 @@ const Signup = () => {
             </div>
           </Grid>
           <Button
+            disabled={!agree}
             type="submit"
             fullWidth
             variant="contained"

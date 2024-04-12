@@ -11,15 +11,18 @@ import { BrowserRouter } from "react-router-dom";
 import { AppProvider } from "./components/context/AppContext.jsx";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { SnackbarProvider } from "notistack";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <AppProvider>
-          <App />
-        </AppProvider>
-      </LocalizationProvider>
-    </BrowserRouter>
+    <SnackbarProvider>
+      <BrowserRouter>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <AppProvider>
+            <App />
+          </AppProvider>
+        </LocalizationProvider>
+      </BrowserRouter>
+    </SnackbarProvider>
   </React.StrictMode>
 );

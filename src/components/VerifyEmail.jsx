@@ -1,6 +1,6 @@
 import AppName from "./common/AppName";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Button,
   Typography,
@@ -12,6 +12,9 @@ import {
 import { MuiOtpInput } from "mui-one-time-password-input";
 import { axiosPost } from "../lib/axiosLib";
 import { apis } from "../lib/apis";
+import { AppContext } from "./context/AppContext";
+import { Login, LoginOutlined } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const styles = {
   submit: {
@@ -27,6 +30,8 @@ const VerifyEmail = () => {
   const [otp, setOtp] = React.useState("");
   const [resendDisabled, setResendDisabled] = useState(false);
   const [resending, setResending] = useState(false);
+  const { snackNotifier, startLoading, stopLoading } = useContext(AppContext);
+  const navigate = useNavigate();
 
   const handleChange = (newValue) => {
     setOtp(newValue);
@@ -47,13 +52,27 @@ const VerifyEmail = () => {
 
   function handleSubmit(e) {
     e.preventDefault();
+    startLoading();
     axiosPost(apis.verifyEmail, {
       otp_code: otp,
-    }).then(response => {
-
-    }).catch(axiosError => {
-        
-    });
+    })
+      .then((response) => {
+        stopLoading();
+        snackNotifier(response.data.message, "success", "top-center");
+        setOtp("");
+      })
+      .catch((axiosError) => {
+        stopLoading();
+        if (axiosError?.response?.data?.failure_code === "ALREADY_VERIFIED") {
+          snackNotifier(
+            axiosError?.response?.data.detail.message,
+            "warning",
+            "top-center"
+          );
+        } else {
+          snackNotifier(axiosError.message, "error", "top-center");
+        }
+      });
   }
 
   return (
@@ -144,6 +163,15 @@ const VerifyEmail = () => {
               </Button>
             </Typography>
           </Grid>
+          <div className="flex">
+            <button
+              title="Login"
+              className="text-purple-600 ring-1 ring-purple-300 rounded-lg mx-auto hover:ring hover:ring-purple-700 px-4 py-1 duration-300"
+              onClick={() => navigate("/login")}
+            >
+              <LoginOutlined />
+            </button>
+          </div>
         </div>
       </div>
     </div>

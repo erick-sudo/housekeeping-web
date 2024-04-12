@@ -2,9 +2,12 @@ import { useContext } from "react";
 import { axiosPost, axiosGet } from "../lib/axiosLib";
 import { apis } from "../lib/apis";
 import { AppContext } from "../components/context/AppContext";
+import { useNavigate } from "react-router-dom";
 
 export function useLogin() {
-  const { setUserInfo, startLoading, stopLoading } = useContext(AppContext);
+  const { setUserInfo, startLoading, stopLoading, snackNotifier } =
+    useContext(AppContext);
+  const navigate = useNavigate();
 
   function updateUserInformation(userData) {
     setUserInfo(userData);
@@ -14,18 +17,21 @@ export function useLogin() {
     startLoading();
     await axiosPost(apis.login, payload)
       .then(async (response) => {
-        await axiosGet(apis.currentUser)
+        stopLoading();
+        snackNotifier("Successfully logged in", "success", "top-center");
+        await axiosGet(apis.profile)
           .then((response) => {
             updateUserInformation(response.data);
+            navigate("/dashboard");
           })
           .catch((axiosError) => {
             errorCallback(axiosError.response.data);
           });
       })
       .catch((axiosError) => {
+        stopLoading();
         errorCallback(axiosError?.response?.data);
       });
-    stopLoading();
   };
 
   return [handleLogin];

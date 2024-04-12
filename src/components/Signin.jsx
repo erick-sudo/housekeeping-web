@@ -22,8 +22,6 @@ import {
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
-import { ValidationErrors } from "./common/ValidationErrors";
-import { axiosPost } from "../lib/axiosLib";
 import { useLogin } from "../hooks/useLogin";
 import Or from "./common/Or";
 
@@ -76,6 +74,7 @@ const Signin = () => {
     email: "",
     password: "",
   });
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
   function handleChange(e) {
@@ -94,10 +93,10 @@ const Signin = () => {
     handleLogin({
       payload: {
         ...formData,
+        remember_me: rememberMe,
       },
       errorCallback: (err) => {
-        //setLoginErrors(err?.errors);
-        console.error(err);
+        setLoginErrors(err);
       },
     });
   }
@@ -107,25 +106,27 @@ const Signin = () => {
       <Container maxWidth="xs" className={`px-4 m-4`}>
         {loginErrors && (
           <div className="py-4 gap-2 grid">
-            <Alert severity="info">
-              <div>
-                Please ensure you verify your email address before any login
-                attempt
-              </div>
-              <div className="flex justify-end">
-                <Button
-                  onClick={() => navigate("/activate_account")}
-                  sx={{ borderRadius: "20px" }}
-                  size="small"
-                  variant="outlined"
-                >
-                  Verify Account
-                </Button>
-              </div>
-            </Alert>
-            {loginErrors?.email && (
+            {loginErrors.failure_code === "NOT_VERIFIED" && (
+              <Alert severity="info">
+                <div>
+                  Please ensure you verify your email address before any login
+                  attempt
+                </div>
+                <div className="flex justify-end">
+                  <Button
+                    onClick={() => navigate("/verify_email")}
+                    sx={{ borderRadius: "20px" }}
+                    size="small"
+                    variant="outlined"
+                  >
+                    Verify Account
+                  </Button>
+                </div>
+              </Alert>
+            )}
+            {loginErrors.failure_code === "AUTHENTICATION" && (
               <Alert severity="error">
-                <ValidationErrors errors={loginErrors} errorsKey="email" />
+                <div>{loginErrors.detail.message}</div>
               </Alert>
             )}
           </div>
@@ -193,7 +194,8 @@ const Signin = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    value="allowExtraEmails"
+                    checked={rememberMe}
+                    onChange={() => setRememberMe(!rememberMe)}
                     sx={styles.customCheckbox}
                   />
                 }
@@ -230,7 +232,7 @@ const Signin = () => {
           </Grid>
         </form>
 
-        <Or className="mt-4"/>
+        <Or className="mt-4" />
 
         <div className="my-4">
           <button

@@ -14,7 +14,6 @@ import {
 } from "@mui/icons-material";
 import {
   ArrowLongRightIcon,
-  Cog8ToothIcon,
   ComputerDesktopIcon,
   HomeModernIcon,
 } from "@heroicons/react/24/outline";

@@ -1,15 +1,13 @@
 import {
-  ContactMailOutlined,
   HomeMiniOutlined,
-  NewspaperOutlined,
   QuestionAnswerOutlined,
   RoomServiceOutlined,
 } from "@mui/icons-material";
 import { Button } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import AppName from "../common/AppName";
 import { useNavigate } from "react-router-dom";
-import { light } from "@mui/material/styles/createPalette";
+import { AppContext } from "../context/AppContext";
 const styles = {
   submit: {
     margin: "3px 0px 2px",
@@ -28,7 +26,7 @@ const nalLinks = [
   },
   {
     name: "Services",
-    path: "/services",
+    path: "/dashboard/services",
     icon: <RoomServiceOutlined />,
   },
   {
@@ -40,6 +38,7 @@ const nalLinks = [
 
 function TopNavigationBar() {
   const navigate = useNavigate();
+  const { userInfo, logout } = useContext(AppContext);
 
   return (
     <div className="flex px-4 py-2 container items-center">
@@ -61,9 +60,21 @@ function TopNavigationBar() {
           );
         })}
       </div>
-      <button onClick={() => navigate("/login")} className="px-4 ring-2 rounded ring-purple-700 text-purple-700 hover:bg-purple-700 hover:text-[#fff] duration-300">
-        Login
-      </button>
+      {userInfo ? (
+        <button
+          onClick={() => logout()}
+          className="px-4 ring-2 rounded ring-purple-700 text-purple-700 hover:bg-purple-700 hover:text-[#fff] duration-300"
+        >
+          Logout
+        </button>
+      ) : (
+        <button
+          onClick={() => navigate("/login")}
+          className="px-4 ring-2 rounded ring-purple-700 text-purple-700 hover:bg-purple-700 hover:text-[#fff] duration-300"
+        >
+          Login
+        </button>
+      )}
     </div>
   );
 }
