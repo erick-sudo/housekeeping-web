@@ -21,7 +21,7 @@ export function useLogin() {
         snackNotifier("Successfully logged in", "success", "top-center");
         await axiosGet(apis.profile)
           .then((response) => {
-            updateUserInformation(response.data);
+            updateUserInformation(response.data.user);
             navigate("/dashboard");
           })
           .catch((axiosError) => {
@@ -30,7 +30,11 @@ export function useLogin() {
       })
       .catch((axiosError) => {
         stopLoading();
-        errorCallback(axiosError?.response?.data);
+        if (axiosError?.response?.data) {
+          errorCallback(axiosError?.response?.data);
+        } else {
+          snackNotifier(axiosError.message, "error", "top-center");
+        }
       });
   };
 

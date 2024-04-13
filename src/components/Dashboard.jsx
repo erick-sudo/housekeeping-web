@@ -8,17 +8,16 @@ function Dashboard() {
 
   return (
     <>
-      {userInfo ? (
+      {Boolean(true) ? (
         <div>
-          <h1>{userInfo ? `Hello ${userInfo.name}` : "Hello Guest"}</h1>
           <div>
             <Routes>
-              <Route path="/services" element={<Services />} />
+              <Route path="/" element={<Services />} />
             </Routes>
           </div>
         </div>
       ) : (
-        <Navigate path="/login" />
+        <Navigate to="/login" />
       )}
     </>
   );

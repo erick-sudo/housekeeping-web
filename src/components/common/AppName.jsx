@@ -6,7 +6,7 @@ export default function AppName() {
   const navigate = useNavigate();
 
   return (
-    <h1
+    <div
       onClick={() => navigate("/")}
       className="font-extrabold cursor-pointer text-2xl relative h-16 flex items-end p-2"
     >
@@ -14,6 +14,6 @@ export default function AppName() {
       <span className="absolute bottom-[50%] left-8 text-purple-600">
         <AutoAwesome />
       </span>
-    </h1>
+    </div>
   );
 }

@@ -16,7 +16,7 @@ function AppProvider({ children }) {
   useEffect(() => {
     axiosGet(apis.profile)
       .then((response) => {
-        setUserInfo(response.data);
+        setUserInfo(response?.data?.user);
       })
       .catch((axiosError) => {
         // console.log(axiosError
@@ -52,7 +52,7 @@ function AppProvider({ children }) {
         snackNotifier("Logged out succesfully", "info", "top-right");
       })
       .catch((err) => {
-        console.log(err);
+        //
       });
   };
 
