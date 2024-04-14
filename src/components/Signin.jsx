@@ -102,7 +102,7 @@ const Signin = () => {
   }
 
   return (
-    <div className="flex fixed inset-0 justify-center items-center">
+    <div className="">
       <Container maxWidth="xs" className={`px-4 m-4`}>
         {loginErrors && (
           <div className="py-4 gap-2 grid">

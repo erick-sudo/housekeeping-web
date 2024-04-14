@@ -53,6 +53,7 @@ function AppProvider({ children }) {
       })
       .catch((err) => {
         //
+        console.log(err);
       });
   };
 

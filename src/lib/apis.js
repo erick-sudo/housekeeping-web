@@ -1,4 +1,5 @@
 const base_url = "http://localhost:8000/api/v1/auth/";
+const house_keeping = base_url.replace("auth", "house_keeper");
 
 export const apis = {
   register: `${base_url}register`,
@@ -9,7 +10,26 @@ export const apis = {
   confirmPasswordReset: `${base_url}confirm-password-reset/<uidb64>/<token>`,
   setNewPassword: `${base_url}set-new-password`,
   logout: `${base_url}logout`,
-  googleLogin: `${base_url}google-login`
+  googleLogin: `${base_url}google-login`,
+  cleaning_frequencies: `${house_keeping}cleaning_frequencies`,
+  bookings: {
+    list: `${house_keeping}bookings/all`,
+    create: `${house_keeping}bookings/create`,
+    retrieve: `${house_keeping}bookings/<id>/retrieve`,
+    delete: `${house_keeping}bookings/<id>/`,
+    acknowledge: `${house_keeping}bookings/acknowledge`,
+  },
+  clean_types: {
+    list: `${house_keeping}clean_types/all`,
+    view: `${house_keeping}clean_types/<id>/view`,
+  },
+  paymentMethods: {
+    list: `${house_keeping}payment_methods/list`,
+  },
+  credit_cards: {
+    retrieve: `${house_keeping}credit_cards/retrieve`,
+    create: `${house_keeping}credit_cards/create`,
+  },
 };
 
 export async function getRequest({ endpoint, errorCallback, successCallback }) {

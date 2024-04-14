@@ -36,20 +36,27 @@ function App() {
 
   return (
     <>
-      {loading && <Loader className="bg-white/75 z-50 fixed" />}
+      {loading && <Loader className="bg-white/75 z-50 fixed inset-0" />}
       <div className="min-h-screen flex flex-col">
         {!standAloneRoutes.includes(pathname) &&
           !Boolean(standAloneRoutes.find((p) => pathname.startsWith(p))) && (
             <TopNavigationBar />
           )}
-        <div className="grow">
+        <div className="grow min-h-[70vh] flex flex-col">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dashboard/*" element={<Dashboard />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/about" element={<About />} />
-            <Route path="/login" element={<Signin />} />
+            <Route
+              path="/login"
+              element={
+                <div className="flex fixed inset-0 justify-center items-center">
+                  <Signin />
+                </div>
+              }
+            />
             <Route path="/signup" element={<Signup />} />
             <Route
               path="/reset_password/:uidb64/:token"

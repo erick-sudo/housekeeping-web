@@ -105,7 +105,7 @@ function Footer() {
     },
   ];
   return (
-    <div className="bg-gray-900 mt-[7em] text-white">
+    <div className="bg-gray-900 mt-[7em] text-white xl:m-[7em] xl:rounded-lg">
       <div className="container">
         <div className="bg-gradient-to-r from-purple-700 to-purple-800 text-white lg:flex items-center mx-8 rounded-lg -translate-y-12 p-4">
           <div className="p-4">
