@@ -1,4 +1,4 @@
-const base_url = "http://localhost:8000/api/v1/auth/";
+const base_url = "http://ec2-16-171-240-46.eu-north-1.compute.amazonaws.com:8000/api/v1/auth/";
 const house_keeping = base_url.replace("auth", "house_keeper");
 
 export const apis = {
